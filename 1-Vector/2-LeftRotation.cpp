@@ -25,6 +25,13 @@ private:
 		cout << "Capacity Expanded!!!\n";
 	}
 
+	void shift_left(int start_idx) {
+        for(int i {start_idx}; i < size-1; i++)
+            arr[i] = arr[i+1];
+        
+        return ;
+    }
+
 public:
 	Vector(int size) :
 			size(size) {
@@ -108,19 +115,17 @@ public:
         return arr[--size];
     }
 
-    void right_rotation() {
+    void right_rotate() {
         int value = pop_back();
         insert(0, value);
         return;
     }
 
-    void left_rotation() {
+    void left_rotate() {
         int front = get_front();
 
         //shift left
-        for (int i {0}; i < (size-1); i++) {
-            arr[i] = arr[i+1];
-        }
+        shift_left(0);
 
         arr[size-1] = front;
         return ;
@@ -139,19 +144,19 @@ int main() {
     v.print();
 
     cout << "Left Rotation\n";
-    v.left_rotation();
+    v.left_rotate();
     v.print();
     
     cout << "Left Rotation\n";
-    v.left_rotation();
+    v.left_rotate();
     v.print();
     
     cout << "Left Rotation\n";
-    v.left_rotation();
+    v.left_rotate();
     v.print();
 
     cout << "Left Rotation\n";
-    v.left_rotation();
+    v.left_rotate();
     v.print();
     
 
