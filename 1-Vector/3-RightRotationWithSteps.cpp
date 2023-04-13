@@ -131,13 +131,14 @@ public:
 
     // Right Rotation with Steps
     void right_rotate( int times) {
+		times %= size;
         stack<int> s;
 
         for (int i {0}; i < times; i++)
             s.push(pop_back());
         
         // Shift Right
-        for (int i {size + times - 1};  i >= (size - 1); i--) {
+        for (int i {size + times - 1};  i >= (times); i--) {
             arr[i] = arr[i - times];
         }
 
@@ -162,7 +163,7 @@ int main() {
 
     v.print();
 
-    v.right_rotate(2);
+    v.right_rotate(7);
     v.print();
     
 
