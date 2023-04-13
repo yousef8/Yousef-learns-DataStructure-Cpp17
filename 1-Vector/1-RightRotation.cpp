@@ -12,6 +12,7 @@ private:
 
 	void expand_capacity() {
 		// Double the actual array size
+		cout << "Expanding Capacity!!!\n";
 		capacity *= 2;
 		cout << "Expand capacity to "
 				<< capacity << "\n";
@@ -21,6 +22,7 @@ private:
 
 		swap(arr, arr2);
 		delete[] arr2;
+		cout << "Capacity Expanded!!!\n";
 	}
 
 public:
@@ -106,7 +108,7 @@ public:
         return arr[--size];
     }
 
-    void right_rotation() {
+    void right_rotate() {
         int value = pop_back();
         insert(0, value);
         return;
@@ -121,24 +123,21 @@ int main() {
         v.set(i, i);
     }
 
-    // cout << v.pop_back() << "\n";
-
-    // cout << v.get_size() << "\n";
-    // v.print();
-
-    // v.push_back(12);
-    // cout << "After push size is " << v.get_size() << "\n";
-    // v.print();
-
-    // v.pop_back();
-    // cout << "After pop size is " << v.get_size() << "\n";
-    // v.print();
+	cout << v.get_size() << "\n";
 
     v.print();
 
     cout << "Right Rotation\n";
-    v.right_rotation();
+    v.right_rotate();
     v.print();
+
+	v.right_rotate();
+    v.print();
+
+	v.right_rotate();
+    v.print();
+	
+	cout << v.get_size() << "\n";
     
 
 	return 0;
