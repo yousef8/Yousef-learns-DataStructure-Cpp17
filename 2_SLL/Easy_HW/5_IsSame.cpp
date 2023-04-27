@@ -184,7 +184,7 @@ public:
         return nullptr;
     }
 
-    bool is_same(LinkedList& ll) { // Time is O(n) - Memory is O(1)
+    bool is_same(const LinkedList& ll) { // Time is O(n) - Memory is O(1)
         for (Node* og = head, *cp = ll.head; og || cp; og = og->next, cp = cp-> next) {
             if (!og || !cp)
                 return false;
