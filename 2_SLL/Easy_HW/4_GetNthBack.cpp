@@ -174,7 +174,7 @@ public:
         return value;
     }
 
-    Node* get_nth_back(int n) {
+    Node* get_nth_back(int n) { // Time is O(n) - Memory is O(1)
         int count {length};
 
         for (Node* curr = head; curr && count >= n; curr = curr->next, --count)

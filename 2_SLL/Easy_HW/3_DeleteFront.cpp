@@ -161,7 +161,7 @@ public:
         }
     }
 
-    int delete_front() {
+    int delete_front() { // Time is O(1) - Memory is O(1)
         Node* new_head = head->next;
         int value = head->data;
 

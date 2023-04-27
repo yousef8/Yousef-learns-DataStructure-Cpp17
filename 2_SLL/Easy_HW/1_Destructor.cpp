@@ -43,7 +43,7 @@ public:
 	LinkedList(const LinkedList&) = delete;
 	LinkedList &operator=(const LinkedList &another) = delete;
 
-    ~LinkedList() {
+    ~LinkedList() {  // Time is O(n)  - Memory is O(1)
         Node* nextNode {nullptr};
         while (head) {
             nextNode = head->next;

@@ -150,7 +150,7 @@ public:
 
 	////////////////////////////////////////////////////////////
 
-    void insert_front(int value) {
+    void insert_front(int value) { // Time is O(1) - Memory is O(1)
         Node* node = new Node{value};
         add_node(node);
         if (!head) {
