@@ -258,6 +258,7 @@ public:
         if (head == cur)
         {
             delete_front();
+            debug_verify_data_integrity();
             return;
         }
 
@@ -265,6 +266,7 @@ public:
             tail = cur->prev;
 
         delete_and_link(cur);
+        debug_verify_data_integrity();
         return;
     }
 
@@ -290,8 +292,7 @@ public:
 int main()
 {
     LinkedList ll{4, 4, 1, 2, 5, 4, 4, 4};
-    ll.print();
-    ll.delete_all_with_key(5);
+    ll.delete_all_with_key(4);
     ll.print();
     return 0;
 }
