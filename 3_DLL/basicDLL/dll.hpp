@@ -1,3 +1,6 @@
+#ifndef DLL_2872023_H
+#define DLL_2872023_H
+
 #include <algorithm>
 #include <cassert>
 #include <initializer_list>
@@ -25,8 +28,8 @@ struct Node {
   }
 };
 
-class LinkedList {
-private:
+class BasicDLL {
+protected:
   std::unique_ptr<Node> head{};
   Node *tail{};
 
@@ -61,15 +64,15 @@ private:
   }
 
 public:
-  LinkedList() = default;
+  BasicDLL() = default;
 
-  LinkedList(const std::initializer_list<int> &lst) {
+  BasicDLL(const std::initializer_list<int> &lst) {
     for (int value : lst)
       insert_end(value);
   }
 
-  LinkedList(const LinkedList &) = delete;
-  LinkedList &operator=(const LinkedList &other) = delete;
+  BasicDLL(const BasicDLL &) = delete;
+  BasicDLL &operator=(const BasicDLL &other) = delete;
 
   // For Debugging purposes
   void print() {
@@ -234,7 +237,7 @@ public:
     return insert_end(value);
   }
 
-  friend std::ostream &operator<<(std::ostream &out, const LinkedList &ls) {
+  friend std::ostream &operator<<(std::ostream &out, const BasicDLL &ls) {
     out << " X <-> ";
 
     for (Node *cur{ls.head.get()}; cur; cur = cur->next.get())
@@ -246,7 +249,7 @@ public:
   }
 
   void delete_front() {
-    // if the LinkedList is empty
+    // if the BasicDLL is empty
     if (head.get() == tail && !head)
       return;
 
@@ -273,6 +276,16 @@ public:
     debug_verify_data_integrity();
   }
 
+  void delete_a_node(Node *to_be_deleted) {
+    if (to_be_deleted == head.get())
+      return delete_front();
+    else if (to_be_deleted == tail)
+      return delete_end();
+    else
+      delete_and_link(to_be_deleted);
+    return;
+  }
+
   void delete_node_with_key(int value) {
     for (Node *cur{head.get()}; cur; cur = cur->next.get()) {
       if (cur->data == value) {
@@ -288,66 +301,4 @@ public:
   }
 };
 
-void insert_sorted_test() {
-  std::cout << "\n\nInsert Sorted Test\n";
-  LinkedList list;
-
-  list.insert_end(3);
-  list.insert_end(5);
-  list.insert_end(7);
-  list.insert_sorted(2);
-  list.insert_sorted(9);
-  list.insert_sorted(7);
-  list.insert_sorted(4);
-  list.insert_sorted(1);
-
-  list.print();
-  // list.print_reversed();
-
-  std::string expected = "1 2 3 4 5 7 7 9";
-  std::string result = list.debug_to_string();
-  if (expected != result) {
-    std::cout << "no match:\nExpected: " << expected << "\nResult  : " << result
-              << "\n";
-    assert(false);
-  }
-  list.debug_print_list("********");
-}
-
-void deletion_test() {
-  std::cout << "\n\nDeletion Test\n";
-  LinkedList list;
-
-  list.insert_end(3);
-  list.insert_end(5);
-  list.insert_end(7);
-  list.insert_front(7);
-  list.delete_front();
-  list.delete_end();
-  list.insert_sorted(2);
-  list.insert_sorted(9);
-  list.insert_sorted(7);
-  list.insert_sorted(4);
-  list.insert_sorted(1);
-  list.delete_node_with_key(9);
-
-  list.print();
-  list.print_reversed();
-
-  std::string expected = "1 2 3 4 5 7";
-  std::string result = list.debug_to_string();
-  if (expected != result) {
-    std::cout << "no match:\nExpected: " << expected << "\nResult  : " << result
-              << "\n";
-    assert(false);
-  }
-  list.debug_print_list("********");
-}
-
-int main() {
-  insert_sorted_test();
-  deletion_test();
-
-  std::cout << "\n\nNO RTE\n";
-  return 0;
-}
+#endif
