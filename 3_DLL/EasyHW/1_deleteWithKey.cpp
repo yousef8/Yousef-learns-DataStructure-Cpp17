@@ -1,298 +1,319 @@
-#include <iostream>
-#include <cassert>
-#include <climits>
-
-#include <vector> // for debug
 #include <algorithm>
+#include <cassert>
+#include <initializer_list>
+#include <iostream>
+#include <memory>
 #include <sstream>
-using namespace std;
+#include <string>
+#include <utility>
+#include <vector>
 
-struct Node
-{
-    int data{};
-    Node *next{};
-    Node *prev{}; // Previous node!
+struct Node {
+  std::unique_ptr<Node> next;
+  int data;
+  Node *prev;
 
-    Node(int data) : data(data) {}
+  Node(int data) : data{data}, next{nullptr}, prev{nullptr} {}
 
-    void set(Node *next, Node *prev)
-    {
-        this->next = next;
-        this->prev = prev;
-    }
+  void set(std::unique_ptr<Node> _next, Node *_prev) {
+    next = std::move(_next);
+    prev = _prev;
+  }
 
-    ~Node()
-    {
-        cout << "Destroy value: " << data << " at address " << this << "\n";
-    }
+  ~Node() {
+    std::cout << "Destroy value: " << data << " at address " << this << "\n";
+  }
 };
 
-class LinkedList
-{
+class LinkedList {
 private:
-    Node *head{};
-    Node *tail{};
-    int length = 0;
+  std::unique_ptr<Node> head{};
+  Node *tail{};
 
-    // let's maintain how many nodes
+  void link(Node *head, Node *tail) {
+    if (head)
+      head->next.reset(tail);
+    if (tail)
+      tail->prev = head;
+  }
 
-    vector<Node *> debug_data; // add/remove nodes you use
+  Node *delete_and_link(Node *to_be_deleted) {
+    Node *prev = to_be_deleted->prev;
+    link(to_be_deleted->prev, to_be_deleted->next.release());
+    delete_node(to_be_deleted);
+    debug_verify_data_integrity();
+    return prev;
+  }
 
-    void debug_add_node(Node *node)
-    {
-        debug_data.push_back(node);
-    }
-    void debug_remove_node(Node *node)
-    {
-        auto it = std::find(debug_data.begin(), debug_data.end(), node);
-        if (it == debug_data.end())
-            cout << "Node does not exist\n";
-        else
-            debug_data.erase(it);
-    }
+  // For debugging purposes
+  // courtesy of course instructor
+
+  int length{0};
+  std::vector<Node *> debug_data;
+
+  void debug_add_node(Node *node) { debug_data.push_back(node); }
+
+  void debug_remove_node(Node *node) {
+    auto it = std::find(debug_data.begin(), debug_data.end(), node);
+    if (it == debug_data.end())
+      std::cout << "Node does not exist\n";
+    else
+      debug_data.erase(it);
+  }
 
 public:
-    // Below 2 deletes prevent copy and assign to avoid this mistake
-    LinkedList()
-    {
+  LinkedList() = default;
+
+  LinkedList(const std::initializer_list<int> &lst) {
+    for (int value : lst)
+      insert_end(value);
+  }
+
+  LinkedList(const LinkedList &) = delete;
+  LinkedList &operator=(const LinkedList &other) = delete;
+
+  // For Debugging purposes
+  void print() {
+    for (Node *cur{head.get()}; cur; cur = cur->next.get())
+      std::cout << cur->data << " ";
+    std::cout << "\n";
+  }
+
+  void print_reversed() {
+    for (Node *cur{tail}; cur; cur = cur->prev)
+      std::cout << cur->data << " <-> ";
+    std::cout << "\n";
+  }
+
+  void debug_print_address() {
+    for (Node *cur{head.get()}; cur; cur = cur->next.get())
+      std::cout << cur << "," << cur->data << "\t";
+    std::cout << "\n";
+  }
+
+  void debug_print_node(Node *node, bool is_seperate = false) {
+    if (is_seperate)
+      std::cout << "Sep: ";
+    if (node == nullptr) {
+      std::cout << "nullptr\n";
+      return;
     }
 
-    LinkedList(const initializer_list<int> &lst)
-    {
-        for (auto &value : lst)
-            insert_end(value);
+    if (node->prev == nullptr)
+      std::cout << "X\t";
+    else
+      std::cout << node->prev->data << "\t";
+
+    std::cout << " <= [" << node->data << "]\t => \t";
+
+    if (node->next == nullptr)
+      std::cout << "X\t";
+    else
+      std::cout << node->next->data << "\t";
+
+    if (node == head.get())
+      std::cout << "head\n";
+    else if (node == tail)
+      std::cout << "tail\n";
+    else
+      std::cout << "\n";
+  }
+  void debug_print_list(std::string msg = "") {
+    if (msg != "")
+      std::cout << msg << "\n";
+    for (int i = 0; i < (int)debug_data.size(); ++i)
+      debug_print_node(debug_data[i]);
+    std::cout << "************\n" << std::flush;
+  }
+
+  std::string debug_to_string() {
+    if (length == 0)
+      return "";
+    std::ostringstream oss;
+    for (Node *cur{head.get()}; cur; cur = cur->next.get()) {
+      oss << cur->data;
+      if (cur->next)
+        oss << " ";
     }
-    LinkedList(const LinkedList &) = delete;
-    LinkedList &operator=(const LinkedList &another) = delete;
+    return oss.str();
+  }
 
-    void debug_print_address()
-    {
-        for (Node *cur = head; cur; cur = cur->next)
-            cout << cur << "," << cur->data << "\t";
-        cout << "\n";
+  void debug_verify_data_integrity() {
+    if (length == 0) {
+      assert(head == nullptr);
+      assert(tail == nullptr);
+    } else {
+      assert(head != nullptr);
+      assert(tail != nullptr);
+      if (length == 1)
+        assert(head.get() == tail);
+      else
+        assert(head.get() != tail);
+      assert(!head->prev);
+      assert(!tail->next);
     }
-
-    void debug_print_node(Node *node, bool is_seperate = false)
-    {
-        if (is_seperate)
-            cout << "Sep: ";
-        if (node == nullptr)
-        {
-            cout << "nullptr\n";
-            return;
-        }
-
-        if (node->prev == nullptr)
-            cout << "X\t";
-        else
-            cout << node->prev->data << "\t";
-
-        cout << " <= [" << node->data << "]\t => \t";
-
-        if (node->next == nullptr)
-            cout << "X\t";
-        else
-            cout << node->next->data << "\t";
-
-        if (node == head)
-            cout << "head\n";
-        else if (node == tail)
-            cout << "tail\n";
-        else
-            cout << "\n";
-    }
-    void debug_print_list(string msg = "")
-    {
-        if (msg != "")
-            cout << msg << "\n";
-        for (int i = 0; i < (int)debug_data.size(); ++i)
-            debug_print_node(debug_data[i]);
-        cout << "************\n"
-             << flush;
-    }
-
-    string debug_to_string()
-    {
-        if (length == 0)
-            return "";
-        ostringstream oss;
-        for (Node *cur = head; cur; cur = cur->next)
-        {
-            oss << cur->data;
-            if (cur->next)
-                oss << " ";
-        }
-        return oss.str();
+    int len = 0;
+    for (Node *cur{head.get()}; cur; cur = cur->next.get(), len++) {
+      if (len == length - 1) // make sure we end at tail
+        assert(cur == tail);
     }
 
-    void debug_verify_data_integrity()
-    {
-        if (length == 0)
-        {
-            assert(head == nullptr);
-            assert(tail == nullptr);
-        }
-        else
-        {
-            assert(head != nullptr);
-            assert(tail != nullptr);
-            if (length == 1)
-                assert(head == tail);
-            else
-                assert(head != tail);
-            assert(!head->prev);
-            assert(!tail->next);
-        }
-        int len = 0;
-        for (Node *cur = head; cur; cur = cur->next, len++)
-        {
-            if (len == length - 1) // make sure we end at tail
-                assert(cur == tail);
-        }
+    assert(length == len);
+    assert(length == (int)debug_data.size());
 
-        assert(length == len);
-        assert(length == (int)debug_data.size());
-
-        len = 0;
-        for (Node *cur = tail; cur; cur = cur->prev, len++)
-        {
-            if (len == length - 1) // make sure we end at head
-                assert(cur == head);
-        }
-        cout << "\n";
+    len = 0;
+    for (Node *cur = tail; cur; cur = cur->prev, len++) {
+      if (len == length - 1) // make sure we end at head
+        assert(cur == head.get());
     }
-    ////////////////////////////////////////////////////////////
+  }
 
-    void print()
-    {
-        for (Node *cur = head; cur; cur = cur->next)
-            cout << cur->data << " ";
-        cout << "\n";
-    }
+  void delete_node(Node *node) {
+    debug_remove_node(node);
+    --length;
+  }
 
-    // These 2 simple functions just to not forget changing the vector and length
-    void delete_node(Node *node)
-    {
-        debug_remove_node(node);
-        --length;
-        delete node;
-    }
+  void add_node(Node *node) {
+    debug_add_node(node);
+    ++length;
+  }
+  ////////////////////////////////////////////////////////////
 
-    void add_node(Node *node)
-    {
-        debug_add_node(node);
-        ++length;
-    }
+  void insert_end(int value) {
+    Node *node = new Node{value};
+    add_node(node);
+    link(tail, node);
 
-    void link(Node *first, Node *second)
-    {
-        if (first)
-            first->next = second;
-        if (second)
-            second->prev = first;
-    }
+    if (!head)
+      head.reset(node);
 
-    Node *delete_and_link(Node *cur)
-    {
-        // remove this node, but connect its neighbors
-        Node *ret = cur->prev;
-        link(cur->prev, cur->next);
-        delete_node(cur);
+    tail = node;
 
-        return ret;
-    }
+    debug_verify_data_integrity();
+  }
 
-    void insert_end(int value)
-    {
-        Node *item = new Node(value);
-        add_node(item);
+  void insert_front(int value) {
+    auto node = std::make_unique<Node>(value);
+    add_node(node.get());
+    link(node.get(), head.release());
+    head.reset(node.release());
+    if (!tail)
+      tail = head.get();
 
-        if (!head)
-            head = tail = item;
-        else
-        {
-            link(tail, item);
-            tail = item;
-        }
-        debug_verify_data_integrity();
-    }
+    debug_verify_data_integrity();
+  }
 
-    void insert_front(int value)
-    {
-        Node *item = new Node(value);
-        add_node(item);
+  void embed_before(Node *cur, int value) {
+    if (cur == head.get())
+      return insert_front(value);
 
-        if (!head)
-            head = tail = item;
-        else
-        {
-            link(item, head);
-            head = item;
-        }
-        debug_verify_data_integrity();
-    }
+    auto new_node = std::make_unique<Node>(value);
+    add_node(new_node.get());
+    Node *prev = cur->prev;
 
-    Node *delete_front()
-    {
-        if (!head)
-            return nullptr;
+    // new_node <-> cur
+    link(new_node.get(), prev->next.release());
+    // same as
+    // new_node->next.reset(prev->next.release());
+    // cur->prev = new_node.get();
 
-        if (head == tail)
-        {
-            delete_node(head);
-            head = tail = nullptr;
-            return head;
-        }
+    // prev <-> new_node <->cur
+    link(prev, new_node.release());
+    // same as
+    // new_node->prev = prev;
+    // prev->next.reset(new_node.release());
 
-        Node *ret = head->next;
-        delete_node(head);
-        head = ret;
+    debug_verify_data_integrity();
+    return;
+  }
 
-        head->prev = nullptr;
+  void insert_sorted(int value) {
+    for (auto cur{head.get()}; cur; cur = cur->next.get())
+      if (value <= cur->data)
+        return embed_before(cur, value);
 
-        return ret;
-    }
+    return insert_end(value);
+  }
 
-    void delete_a_node(Node *cur)
-    {
-        if (head == cur)
-        {
-            delete_front();
-            debug_verify_data_integrity();
-            return;
-        }
+  friend std::ostream &operator<<(std::ostream &out, const LinkedList &ls) {
+    out << " X <-> ";
 
+    for (Node *cur{ls.head.get()}; cur; cur = cur->next.get())
+      out << cur->data << " <-> ";
+
+    out << "X ";
+
+    return out;
+  }
+
+  void delete_front() {
+    // if the LinkedList is empty
+    if (head.get() == tail && !head)
+      return;
+
+    delete_node(head.get());
+    head.reset(head->next.release());
+    if (head)
+      head->prev = nullptr;
+    else
+      tail = nullptr;
+
+    debug_verify_data_integrity();
+  }
+
+  void delete_end() {
+    if (head.get() == tail)
+      return delete_front();
+
+    Node *old_tail = tail;
+    tail = tail->prev;
+
+    old_tail->prev->next.reset();
+    delete_node(old_tail);
+
+    debug_verify_data_integrity();
+  }
+
+  void delete_a_node(Node *to_be_deleted) {
+    if (to_be_deleted == head.get())
+      return delete_front();
+    else if (to_be_deleted == tail)
+      return delete_end();
+    else
+      delete_and_link(to_be_deleted);
+    return;
+  }
+
+  void delete_node_with_key(int value) {
+    for (Node *cur{head.get()}; cur; cur = cur->next.get()) {
+      if (cur->data == value) {
+        if (cur == head.get())
+          return delete_front();
         if (cur == tail)
-            tail = cur->prev;
-
+          return delete_end();
         delete_and_link(cur);
         debug_verify_data_integrity();
         return;
+      }
     }
+  }
 
-    void delete_all_with_key(Node *cur, int key)
-    {
-        if (!cur)
-            return;
-
-        delete_all_with_key(cur->next, key);
-
-        if (cur->data == key)
-            delete_a_node(cur);
-
-        debug_verify_data_integrity();
+  void delete_all_nodes_with_key(int value) {
+    for (Node *cur{head.get()}; cur;) {
+      Node *to_be_deleted = cur;
+      cur = cur->next.get();
+      if (to_be_deleted->data == value) 
+          delete_a_node(to_be_deleted);
+      
     }
-
-    void delete_all_with_key(int key)
-    {
-        delete_all_with_key(head, key);
-    }
+  }
 };
 
-int main()
-{
-    LinkedList ll{4, 4, 1, 2, 5, 4, 4, 4};
-    ll.delete_all_with_key(4);
-    ll.print();
-    return 0;
+int main() {
+  LinkedList ll{4, 4, 1, 2, 5, 4, 4, 4};
+  std::cout << ll << "\n";
+  std::cout << "Deleteing  all nodes with value 4\n";
+  ll.delete_all_nodes_with_key(4);
+  std::cout << ll << "\n";
+  return 0;
 }
