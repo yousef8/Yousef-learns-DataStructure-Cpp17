@@ -9,9 +9,9 @@ struct Node
 	int value;
 	int idx;
 	std::unique_ptr<Node> nxt;
-	Node *prev;
+	Node *prv;
 
-	Node(int _value, int _idx) : value{_value}, idx{_idx}, nxt{nullptr}, prev{nullptr}
+	Node(int _value, int _idx) : value{_value}, idx{_idx}, nxt{nullptr}, prv{nullptr}
 	{
 	}
 

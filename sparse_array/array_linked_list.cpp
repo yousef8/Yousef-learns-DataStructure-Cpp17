@@ -1,110 +1,81 @@
 #include <algorithm> //debug
 #include <cassert>	 //debug
+#include <iomanip>
 #include <iostream>
 #include <memory>
-#include <optional>
 #include <sstream> //debug
-#include <utility>
-#include <vector> //debug
+#include <vector>  //debug
 
 #include "sparse_node.hpp"
 
 class ArrayLinkedList
 {
   public:
-	ArrayLinkedList(int _length) : head{nullptr}, tail{nullptr}, length{_length}
+	ArrayLinkedList(int _length) : length{_length}
 	{
+		auto node = new Node(0, -1);
+		add_node(node);
+		head.reset(node);
+		tail = head.get();
+		debug_verify_data_integrity();
 	}
 
 	void set_value(int value, int idx)
 	{
-		if (idx < 1 || idx > length)
-		{
-			std::cout << "Index ranges from 1 -> " << length << std::endl;
-			return;
-		}
+		assert(idx > 0);
+		assert(idx < length);
 
-		for (auto cur{head.get()}; cur; cur = cur->nxt.get())
-		{
-			if (idx <= cur->idx)
-			{
-				embed_before(cur, value, idx);
-				return;
-			}
-		}
-
-		insert_end(value, idx);
+		auto node = get_idx(idx, true);
+		node->value = value;
 		return;
 	}
 
-	std::optional<int> get_value(int idx)
+	int get_value(int idx)
 	{
-		for (auto cur{head.get()}; cur; cur = cur->nxt.get())
+		auto node = get_idx(idx);
+		if (!node)
 		{
-			if (idx <= cur->idx)
-			{
-				return cur->value;
-			}
+			return 0;
 		}
-
-		return std::nullopt;
+		return node->idx;
 	}
 
 	void print_array_nonzero()
 	{
-		for (Node *cur{head.get()}; cur; cur = cur->nxt.get())
-			std::cout << cur->value << " ";
+		auto cur_node{head.get()};
+		while (cur_node)
+		{
+			std::cout << std::setw(4) << cur_node->value;
+			cur_node = cur_node->nxt.get();
+		}
 		std::cout << std::endl;
-		return;
 	}
 
 	void add(ArrayLinkedList &other)
 	{
-		Node *cur = head.get();
-		Node *other_cur = other.head.get();
-
-		while (cur && other_cur)
+		auto other_cur_node{other.head->nxt.get()};
+		while (other_cur_node)
 		{
-			if (other_cur->idx < cur->idx)
-			{
-				embed_before(cur, other_cur->value, other_cur->idx);
-				other_cur = other_cur->nxt.get();
-				cur = cur->prev;
-			}
-			if (other_cur->idx == cur->idx)
-			{
-				cur->value += other_cur->value;
-				other_cur = other_cur->nxt.get();
-			}
-			cur = cur->nxt.get();
+			auto node = get_idx(other_cur_node->idx, true);
+			node->value += other_cur_node->value;
+			other_cur_node = other_cur_node->nxt.get();
 		}
-
-		while (other_cur)
-		{
-			insert_end(other_cur->value, other_cur->idx);
-			other_cur = other_cur->nxt.get();
-		}
-
 		debug_verify_data_integrity();
-		return;
 	}
 
 	friend std::ostream &operator<<(std::ostream &out, const ArrayLinkedList &ls)
 	{
-		int last_idx = 1;
+		Node *cur{ls.head->nxt.get()};
 
-		for (Node *cur{ls.head.get()}; cur; cur = cur->nxt.get())
+		for (int count{0}; count < ls.length; ++count)
 		{
-			while (last_idx++ < cur->idx)
+			int value = 0;
+			if (cur && cur->idx == count)
 			{
-				out << "0 ";
+				value = cur->value;
+				cur = cur->nxt.get();
 			}
-			out << cur->value << " ";
-		}
-
-		while (last_idx++ <= ls.length)
-		{
-			out << "0 ";
+			out << std::setw(4) << value;
 		}
 
 		return out;
@@ -120,55 +91,48 @@ class ArrayLinkedList
 		if (head)
 			head->nxt.reset(tail);
 		if (tail)
-			tail->prev = head;
+			tail->prv = head;
 	}
 
-	Node *embed_before(Node *cur, int value, int idx)
+	Node *get_idx(int idx, bool create = false)
 	{
-		if (cur == head.get())
-			return insert_front(value, idx);
+		Node *prv_node = head.get();
 
-		auto new_node = new Node(value, idx);
-		add_node(new_node);
-		Node *prev = cur->prev;
+		while (prv_node->nxt && prv_node->nxt->idx < idx)
+		{
+			prv_node = prv_node->nxt.get();
+		}
 
-		// new_node <-> cur
-		link(new_node, prev->nxt.release());
+		bool found = prv_node->nxt && prv_node->nxt->idx == idx;
 
-		// prev <-> new_node <->cur
-		link(prev, new_node);
+		if (found)
+		{
+			return prv_node->nxt.get();
+		}
 
-		debug_verify_data_integrity();
-		return new_node;
+		if (create)
+		{
+			return embed_after(prv_node, idx);
+		}
+
+		return nullptr;
 	}
 
-	Node *insert_end(int value, int idx)
+	Node *embed_after(Node *node_before, int idx, int value = 0)
 	{
-		Node *node = new Node{value, idx};
-		add_node(node);
-		link(tail, node);
+		auto middle = new Node(value, idx);
+		add_node(middle);
+		auto node_after = node_before->nxt.release();
 
-		if (!head)
-			head.reset(node);
+		link(node_before, middle);
+		link(middle, node_after);
 
-		tail = node;
+		if (tail == node_before)
+		{
+			tail = middle;
+		}
 
-		debug_verify_data_integrity();
-		return node;
-	}
-
-	Node *insert_front(int value, int idx)
-	{
-		auto node = new Node(value, idx);
-		add_node(node);
-
-		link(node, head.release());
-		head.reset(node);
-		if (!tail)
-			tail = head.get();
-
-		debug_verify_data_integrity();
-		return node;
+		return middle;
 	}
 
 	//====================================For Debugging Purposes====================================
@@ -198,7 +162,7 @@ class ArrayLinkedList
 
 	void print_reversed()
 	{
-		for (Node *cur{tail}; cur; cur = cur->prev)
+		for (Node *cur{tail}; cur; cur = cur->prv)
 			std::cout << cur->value << " <-> ";
 		std::cout << "\n";
 	}
@@ -220,10 +184,10 @@ class ArrayLinkedList
 			return;
 		}
 
-		if (node->prev == nullptr)
+		if (node->prv == nullptr)
 			std::cout << "X\t";
 		else
-			std::cout << node->prev->value << "\t";
+			std::cout << node->prv->value << "\t";
 
 		std::cout << " <= [" << node->value << "]\t => \t";
 
@@ -277,7 +241,7 @@ class ArrayLinkedList
 				assert(head.get() == tail);
 			else
 				assert(head.get() != tail);
-			assert(!head->prev);
+			assert(!head->prv);
 			assert(!tail->nxt);
 		}
 		int len = 0;
@@ -291,7 +255,7 @@ class ArrayLinkedList
 		assert(debug_length == (int)debug_data.size());
 
 		len = 0;
-		for (Node *cur = tail; cur; cur = cur->prev, len++)
+		for (Node *cur = tail; cur; cur = cur->prv, len++)
 		{
 			if (len == debug_length - 1) // make sure we end at head
 				assert(cur == head.get());
@@ -319,14 +283,18 @@ int main()
 	array.set_value(20, 2);
 	array.set_value(70, 7);
 	array.set_value(40, 4);
-	std::cout << array << "\n";
+	std::cout << "Array 1 : ";
+	array.print_array_nonzero();
 
 	ArrayLinkedList arr2(10);
 	arr2.set_value(1, 4);
 	arr2.set_value(3, 7);
 	arr2.set_value(4, 6);
-	std::cout << arr2 << "\n";
+	std::cout << "Array 2 : ";
+	arr2.print_array_nonzero();
 
+	std::cout << array << "\n";
+	std::cout << arr2 << "\n";
 	array.add(arr2);
 	std::cout << array << "\n";
 
