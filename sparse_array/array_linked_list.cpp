@@ -30,14 +30,14 @@ template <typename T> class ArrayLinkedList
 		return;
 	}
 
-	int get_value(int idx)
+	T get_value(int idx)
 	{
 		auto node = get_idx(idx);
 		if (!node)
 		{
-			return 0;
+			return T();
 		}
-		return node->idx;
+		return node->value;
 	}
 
 	void print_array_nonzero()
