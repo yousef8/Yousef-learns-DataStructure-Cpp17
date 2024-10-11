@@ -4,14 +4,14 @@
 #include <iostream>
 #include <memory>
 
-struct Node
+template <typename T> struct Node
 {
-	int value;
+	T value;
 	int idx;
 	std::unique_ptr<Node> nxt;
 	Node *prv;
 
-	Node(int _value, int _idx) : value{_value}, idx{_idx}, nxt{nullptr}, prv{nullptr}
+	Node(T _value, int _idx) : value{_value}, idx{_idx}, nxt{nullptr}, prv{nullptr}
 	{
 	}
 
