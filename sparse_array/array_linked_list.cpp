@@ -11,7 +11,7 @@
 template <typename T> class ArrayLinkedList
 {
   public:
-	ArrayLinkedList(int _length) : length{_length}
+	ArrayLinkedList(int _length = 10) : length{_length}
 	{
 		auto node = new Node<T>(T(), -1);
 		add_node(node);
