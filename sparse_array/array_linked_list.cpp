@@ -4,7 +4,8 @@
 #include <iostream>
 #include <memory>
 #include <sstream> //debug
-#include <vector>  //debug
+#include <utility>
+#include <vector> //debug
 
 #include "sparse_node.hpp"
 
@@ -18,6 +19,22 @@ template <typename T> class ArrayLinkedList
 		head.reset(node);
 		tail = head.get();
 		debug_verify_data_integrity();
+	}
+
+	ArrayLinkedList(const ArrayLinkedList &other) : ArrayLinkedList{other.length}
+	{
+		auto otherCurNode = other.head->nxt.get();
+		while (otherCurNode)
+		{
+			embed_after(tail, otherCurNode->idx, otherCurNode->value);
+			otherCurNode = otherCurNode->nxt.get();
+		}
+	}
+
+	ArrayLinkedList &operator=(ArrayLinkedList other)
+	{
+		swap(*this, other);
+		return *this;
 	}
 
 	void set_value(T value, int idx)
@@ -79,6 +96,14 @@ template <typename T> class ArrayLinkedList
 		}
 
 		return out;
+	}
+
+	friend void swap(ArrayLinkedList &first, ArrayLinkedList &second)
+	{
+		using std::swap;
+		std::swap(first.length, second.length);
+		std::swap(first.head, second.head);
+		std::swap(first.tail, second.tail);
 	}
 
   private:
