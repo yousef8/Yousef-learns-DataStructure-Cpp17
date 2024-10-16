@@ -104,6 +104,8 @@ template <typename T> class ArrayLinkedList
 		std::swap(first.length, second.length);
 		std::swap(first.head, second.head);
 		std::swap(first.tail, second.tail);
+		std::swap(first.debug_length, second.debug_length);
+		std::swap(first.debug_data, second.debug_data);
 	}
 
   private:
