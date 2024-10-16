@@ -39,6 +39,13 @@ template <typename T> class ArrayLinkedList
 		return *this;
 	}
 
+	ArrayLinkedList &operator+=(const ArrayLinkedList &other)
+	{
+		add(other);
+		debug_verify_data_integrity();
+		return *this;
+	}
+
 	void set_value(const T &value, int idx)
 	{
 		assert(idx > 0);
@@ -71,7 +78,7 @@ template <typename T> class ArrayLinkedList
 		std::cout << std::endl;
 	}
 
-	void add(ArrayLinkedList &other)
+	void add(const ArrayLinkedList &other)
 	{
 		auto other_cur_node{other.head->nxt.get()};
 		while (other_cur_node)
@@ -308,6 +315,11 @@ template <typename T> class ArrayLinkedList
 	//====================================For Debugging Purposes====================================
 };
 
+template <typename T> ArrayLinkedList<T> operator+(ArrayLinkedList<T> lhs, const ArrayLinkedList<T> &rhs)
+{
+	return lhs += rhs;
+}
+
 int main()
 {
 	ArrayLinkedList<int> array{10};
@@ -325,10 +337,24 @@ int main()
 	std::cout << "Array 2 : ";
 	arr2.print_array_nonzero();
 
-	std::cout << array << "\n";
-	std::cout << arr2 << "\n";
-	array.add(arr2);
-	std::cout << array << "\n";
+	ArrayLinkedList<ArrayLinkedList<int>> mat1{};
+	mat1.set_value(array, 1);
+	std::cout << "Matrix 1 : ";
+	mat1.print_array_nonzero();
 
+	ArrayLinkedList<ArrayLinkedList<int>> mat2{};
+	mat2.set_value(arr2, 1);
+	std::cout << "Matrix 2 : ";
+	mat2.print_array_nonzero();
+
+	std::cout << "mat1 + mat2 = ";
+	auto resMat = mat1 + mat2;
+	resMat.print_array_nonzero();
+
+	std::cout << "Matrix 1 : ";
+	mat1.print_array_nonzero();
+
+	std::cout << "Matrix 2 : ";
+	mat2.print_array_nonzero();
 	return 0;
 }
