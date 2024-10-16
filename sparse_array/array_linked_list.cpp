@@ -37,7 +37,7 @@ template <typename T> class ArrayLinkedList
 		return *this;
 	}
 
-	void set_value(T value, int idx)
+	void set_value(const T &value, int idx)
 	{
 		assert(idx > 0);
 		assert(idx < length);
@@ -59,7 +59,7 @@ template <typename T> class ArrayLinkedList
 
 	void print_array_nonzero()
 	{
-		auto cur_node{head.get()};
+		auto cur_node{head->nxt.get()};
 		while (cur_node)
 		{
 			std::cout << std::setw(4) << cur_node->value;
