@@ -29,11 +29,13 @@ template <typename T> class ArrayLinkedList
 			embed_after(tail, otherCurNode->idx, otherCurNode->value);
 			otherCurNode = otherCurNode->nxt.get();
 		}
+		debug_verify_data_integrity();
 	}
 
 	ArrayLinkedList &operator=(ArrayLinkedList other)
 	{
 		swap(*this, other);
+		debug_verify_data_integrity();
 		return *this;
 	}
 
@@ -44,6 +46,7 @@ template <typename T> class ArrayLinkedList
 
 		auto node = get_idx(idx, true);
 		node->value = value;
+		debug_verify_data_integrity();
 		return;
 	}
 
@@ -158,6 +161,8 @@ template <typename T> class ArrayLinkedList
 		{
 			tail = middle;
 		}
+
+		debug_verify_data_integrity();
 
 		return middle;
 	}
