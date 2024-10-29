@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iomanip>
 #include <iostream>
+#include <optional>
 #include <utility>
 
 template <typename T> class ArrayLinkedList
@@ -47,7 +48,7 @@ template <typename T> class ArrayLinkedList
 
 	void set_value(const T &value, int idx)
 	{
-		assert(idx > 0);
+		assert(idx >= 0);
 		assert(idx < length);
 
 		auto node = get_idx(idx, true);
@@ -56,13 +57,12 @@ template <typename T> class ArrayLinkedList
 		return;
 	}
 
-	T get_value(int idx)
+	std::optional<T> get_value(int idx)
 	{
-		// TODO: use std::optional
 		auto node = get_idx(idx);
 		if (!node)
 		{
-			return T();
+			return {};
 		}
 		return node->value;
 	}

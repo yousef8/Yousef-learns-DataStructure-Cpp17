@@ -14,12 +14,19 @@ class SparceMatrix
 
 	void set_value(int value, int row_idx, int col_idx)
 	{
-		// WARNING: not complete
 		assert(row_idx >= 0);
 		assert(row_idx < rows);
-		ArrayLinkedList<int> col{cols};
-		col.set_value(value, col_idx);
-		mat.set_value(col, row_idx);
+		auto row = mat.get_value(row_idx);
+		if (row)
+		{
+			(*row).set_value(value, col_idx);
+			mat.set_value(*row, row_idx);
+			return;
+		}
+		ArrayLinkedList<int> new_row{cols};
+		new_row.set_value(value, col_idx);
+		mat.set_value(new_row, row_idx);
+		return;
 	}
 
 	friend std::ostream &operator<<(std::ostream &out, const SparceMatrix &ls)
