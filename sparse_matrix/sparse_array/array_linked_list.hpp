@@ -58,6 +58,7 @@ template <typename T> class ArrayLinkedList
 
 	T get_value(int idx)
 	{
+		// TODO: use std::optional
 		auto node = get_idx(idx);
 		if (!node)
 		{
