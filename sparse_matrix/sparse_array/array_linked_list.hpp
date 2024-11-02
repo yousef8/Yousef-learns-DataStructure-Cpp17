@@ -4,8 +4,10 @@
 #include "array_linked_list_debugger.hpp"
 #include "sparse_node.hpp"
 #include <cassert>
+#include <cstddef>
 #include <iomanip>
 #include <iostream>
+#include <iterator>
 #include <optional>
 #include <utility>
 
@@ -30,6 +32,65 @@ template <typename T> class ArrayLinkedList
 			otherCurNode = otherCurNode->nxt.get();
 		}
 		debug_verify_data_integrity();
+	}
+
+	struct Iterator
+	{
+		using iterator_category = std::forward_iterator_tag;
+		using differenc_type = std::ptrdiff_t;
+		using value_type = Node<T>;
+		using pointer = Node<T> *;
+		using reference = Node<T> &;
+
+		Iterator(pointer ptr) : m_ptr(ptr)
+		{
+		}
+
+		reference operator*() const
+		{
+			return *m_ptr;
+		}
+
+		pointer operator->()
+		{
+			return m_ptr;
+		}
+
+		Iterator &operator++()
+		{
+			m_ptr = m_ptr->nxt.get();
+			return *this;
+		}
+
+		Iterator operator++(int)
+		{
+			Iterator tmp = *this;
+			++(*this);
+			return tmp;
+		}
+
+		friend bool operator==(const Iterator &a, const Iterator &b)
+		{
+			return a.m_ptr == b.m_ptr;
+		}
+
+		friend bool operator!=(const Iterator &a, const Iterator &b)
+		{
+			return a.m_ptr != b.m_ptr;
+		}
+
+	  private:
+		pointer m_ptr;
+	};
+
+	Iterator begin()
+	{
+		return Iterator(head->nxt.get());
+	}
+
+	Iterator end()
+	{
+		return Iterator(tail->nxt.get());
 	}
 
 	ArrayLinkedList &operator=(ArrayLinkedList other)
