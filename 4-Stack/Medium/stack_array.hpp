@@ -49,6 +49,16 @@ class Stack {
 		push(last_top);
 	}
 
+  void reverse() {
+    if(isEmpty()){
+      return;
+    }
+
+    int last_top = pop();
+    reverse();
+    push_back(last_top);
+  }
+
 	int isFull() { return top == size - 1; }
 
 	int isEmpty() { return top == -1; }
