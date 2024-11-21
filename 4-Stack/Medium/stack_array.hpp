@@ -1,5 +1,6 @@
 #include <cassert>
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -15,18 +16,37 @@ class Stack {
 	~Stack() { delete[] array; }
 
 	void push(int x) {
-		assert(!isFull());
+		if (isFull()) {
+			throw std::overflow_error("Stack is full");
+		}
 		array[++top] = x;
 	}
 
 	int pop() {
-		assert(!isEmpty());
+		if (isEmpty()) {
+			throw std::underflow_error("Stack is empty");
+		}
 		return array[top--];
 	}
 
 	int peek() {
 		assert(!isEmpty());
 		return array[top];
+	}
+
+	void push_back(int x) {
+		if (isFull()) {
+			throw std::overflow_error("Stack is full");
+		}
+
+		if (isEmpty()) {
+			push(x);
+			return;
+		}
+
+		int last_top = pop();
+		push_back(x);
+		push(last_top);
 	}
 
 	int isFull() { return top == size - 1; }
@@ -41,3 +61,4 @@ class Stack {
 		cout << "\n";
 	}
 };
+
