@@ -3,14 +3,12 @@
 #include <memory>
 #include <stdexcept>
 
-typedef char type;
-
-class Stack {
+template <typename T> class Stack {
   private:
 	struct Node {
-		type data{};
+		T data{};
 		std::unique_ptr<Node> nxt;
-		Node(type _data, std::unique_ptr<Node> _nxt = nullptr)
+		Node(T _data, std::unique_ptr<Node> _nxt = nullptr)
 			: data{_data}, nxt{std::move(_nxt)} {}
 	};
 
@@ -34,25 +32,25 @@ class Stack {
 		std::cout << std::endl;
 	}
 
-	void push(type value) {
+	void push(T value) {
 		head = std::unique_ptr<Node>(new Node{value, std::move(head)});
 	}
 
-	type pop() {
+	T pop() {
 		if (isEmpty()) {
 			throw std::underflow_error("Stack is empty");
 		}
-		int element = head->data;
+		auto element = head->data;
 		auto next = std::move(head->nxt);
 		head = std::move(next);
 		return element;
 	}
 
-	type peek() {
+	T peek() {
 		if (isEmpty()) {
 			throw std::underflow_error("Stack is empty");
 		}
-		int element = head->data;
+		auto element = head->data;
 		return element;
 	}
 
