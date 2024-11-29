@@ -12,7 +12,7 @@
 // Individual test functions
 void testPush() {
 	TEST_START("Test Push")
-	Stack stack;
+	Stack<char> stack;
 	stack.push('A');
 	stack.push('B');
 	stack.push('C');
@@ -29,7 +29,7 @@ void testPush() {
 
 void testPop() {
 	TEST_START("Test Pop")
-	Stack stack;
+	Stack<char> stack;
 	stack.push('A');
 	stack.push('B');
 	stack.push('C');
@@ -55,7 +55,7 @@ void testPop() {
 
 void testPeek() {
 	TEST_START("Test Peek")
-	Stack stack;
+	Stack<char> stack;
 	stack.push('A');
 	stack.push('B');
 	stack.push('C');
@@ -70,7 +70,7 @@ void testPeek() {
 
 void testIsEmpty() {
 	TEST_START("Test IsEmpty")
-	Stack stack;
+	Stack<char> stack;
 
 	// Empty check
 	assert(stack.isEmpty() && "Stack should be empty initially");
@@ -89,7 +89,7 @@ void testIsEmpty() {
 
 void testDisplay() {
 	TEST_START("Test Display")
-	Stack stack;
+	Stack<char> stack;
 	stack.push('A');
 	stack.push('B');
 	stack.push('C');
