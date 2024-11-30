@@ -21,7 +21,7 @@ bool isLTR(char ch) {
 
 std::string infix_to_postfix(std::string infix) {
 	infix += '-';
-	Stack stk;
+	Stack<int> stk;
 	stk.push('#');
 	std::string postfix{};
 
