@@ -5,11 +5,6 @@
 using namespace std;
 
 class Stack {
-  private:
-	int size{};
-	int top{};
-	int *array{};
-
   public:
 	Stack(int size) : size(size), top(-1) { array = new int[size]; }
 
@@ -29,7 +24,7 @@ class Stack {
 		return array[top--];
 	}
 
-	int peek() {
+	int peek() const {
 		assert(!isEmpty());
 		return array[top];
 	}
@@ -59,15 +54,20 @@ class Stack {
 		push_back(last_top);
 	}
 
-	int isFull() { return top == size - 1; }
+	int isFull() const { return top == size - 1; }
 
-	int isEmpty() { return top == -1; }
+	int isEmpty() const { return top == -1; }
 
-	int capacity() { return top + 1; }
+	int capacity() const { return top + 1; }
 
-	void display() {
+	void display() const {
 		for (int i = top; i >= 0; i--)
 			cout << array[i] << " ";
 		cout << "\n";
 	}
+
+  private:
+	int size{};
+	int top{};
+	int *array{};
 };

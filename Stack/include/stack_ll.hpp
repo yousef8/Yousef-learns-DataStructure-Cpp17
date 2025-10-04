@@ -4,16 +4,6 @@
 #include <stdexcept>
 
 template <typename T> class Stack {
-  private:
-	struct Node {
-		T data{};
-		std::unique_ptr<Node> nxt;
-		Node(T _data, std::unique_ptr<Node> _nxt = nullptr)
-			: data{_data}, nxt{std::move(_nxt)} {}
-	};
-
-	std::unique_ptr<Node> head{};
-
   public:
 	~Stack() {
 		while (head) {
@@ -22,7 +12,7 @@ template <typename T> class Stack {
 		}
 	}
 
-	void display() {
+	void display() const {
 		Node *current = head.get();
 
 		while (current) {
@@ -46,7 +36,7 @@ template <typename T> class Stack {
 		return element;
 	}
 
-	T peek() {
+	T peek() const {
 		if (isEmpty()) {
 			throw std::underflow_error("Stack is empty");
 		}
@@ -54,5 +44,15 @@ template <typename T> class Stack {
 		return element;
 	}
 
-	int isEmpty() { return !head; }
+	int isEmpty() const { return !head; }
+
+  private:
+	struct Node {
+		T data{};
+		std::unique_ptr<Node> nxt;
+		Node(T _data, std::unique_ptr<Node> _nxt = nullptr)
+			: data{_data}, nxt{std::move(_nxt)} {}
+	};
+
+	std::unique_ptr<Node> head{};
 };
