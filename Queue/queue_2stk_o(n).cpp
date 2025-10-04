@@ -1,4 +1,4 @@
-#include "../4-Stack/Easy/stack_array.hpp"
+#include "../Stack/Easy/stack_array.hpp"
 #include <iostream>
 
 class Queue {
