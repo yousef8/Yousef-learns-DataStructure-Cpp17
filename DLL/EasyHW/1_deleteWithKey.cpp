@@ -1,21 +1,16 @@
-#include "../basicDLL/dll.hpp"
+#include "../include/dll.hpp"
 
-class DLL : public BasicDLL
-{
+class DLLExtended : public Dll {
   public:
-	DLL() = default;
+	DLLExtended() = default;
 
-	DLL(const std::initializer_list<int> &lst) : BasicDLL{lst}
-	{
-	}
+	DLLExtended(const std::initializer_list<int> &lst) : Dll{lst} {}
 
-	DLL(const DLL &) = delete;
-	DLL &operator=(const DLL &other) = delete;
+	DLLExtended(const DLLExtended &) = delete;
+	DLLExtended &operator=(const DLLExtended &other) = delete;
 
-	void delete_all_nodes_with_key(int value)
-	{
-		for (Node *cur{head.get()}; cur;)
-		{
+	void delete_all_nodes_with_key(int value) {
+		for (Node *cur{head.get()}; cur;) {
 			Node *to_be_deleted = cur;
 			cur = cur->next.get();
 			if (to_be_deleted->data == value)
@@ -24,11 +19,10 @@ class DLL : public BasicDLL
 	}
 };
 
-void delete_all_nodes_with_key_test()
-{
+void delete_all_nodes_with_key_test() {
 	std::cout << "\n\nDelete all nodes with key Test\n";
 	std::cout << "Test 1\n";
-	DLL list{4, 4, 1, 2, 5, 4, 4, 4};
+	DLLExtended list{4, 4, 1, 2, 5, 4, 4, 4};
 
 	list.print();
 
@@ -37,15 +31,15 @@ void delete_all_nodes_with_key_test()
 
 	std::string expected = "1 2 5";
 	std::string result = list.debug_to_string();
-	if (expected != result)
-	{
-		std::cout << "no match:\nExpected: " << expected << "\nResult  : " << result << "\n";
+	if (expected != result) {
+		std::cout << "no match:\nExpected: " << expected
+				  << "\nResult  : " << result << "\n";
 		assert(false);
 	}
 	list.debug_print_list("********");
 
 	std::cout << "Test 2\n";
-	DLL list2{1, 2, 5, 4, 5, 4, 4};
+	DLLExtended list2{1, 2, 5, 4, 5, 4, 4};
 
 	list2.print();
 
@@ -54,16 +48,15 @@ void delete_all_nodes_with_key_test()
 
 	expected = "1 2 4 4 4";
 	result = list2.debug_to_string();
-	if (expected != result)
-	{
-		std::cout << "no match:\nExpected: " << expected << "\nResult  : " << result << "\n";
+	if (expected != result) {
+		std::cout << "no match:\nExpected: " << expected
+				  << "\nResult  : " << result << "\n";
 		assert(false);
 	}
 	list2.debug_print_list("********");
 }
 
-int main()
-{
+int main() {
 	delete_all_nodes_with_key_test();
 	std::cout << "\n\nNO RTE\n";
 	return 0;

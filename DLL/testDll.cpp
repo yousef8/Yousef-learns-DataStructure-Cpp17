@@ -1,9 +1,8 @@
-#include "dll.hpp"
+#include "./include/dll.hpp"
 
-void insert_sorted_test()
-{
+void insert_sorted_test() {
 	std::cout << "\n\nInsert Sorted Test\n";
-	BasicDLL list;
+	Dll list;
 
 	list.insert_end(3);
 	list.insert_end(5);
@@ -19,18 +18,17 @@ void insert_sorted_test()
 
 	std::string expected = "1 2 3 4 5 7 7 9";
 	std::string result = list.debug_to_string();
-	if (expected != result)
-	{
-		std::cout << "no match:\nExpected: " << expected << "\nResult  : " << result << "\n";
+	if (expected != result) {
+		std::cout << "no match:\nExpected: " << expected
+				  << "\nResult  : " << result << "\n";
 		assert(false);
 	}
 	list.debug_print_list("********");
 }
 
-void deletion_test()
-{
+void deletion_test() {
 	std::cout << "\n\nDeletion Test\n";
-	BasicDLL list;
+	Dll list;
 
 	list.insert_end(3);
 	list.insert_end(5);
@@ -50,16 +48,15 @@ void deletion_test()
 
 	std::string expected = "1 2 3 4 5 7";
 	std::string result = list.debug_to_string();
-	if (expected != result)
-	{
-		std::cout << "no match:\nExpected: " << expected << "\nResult  : " << result << "\n";
+	if (expected != result) {
+		std::cout << "no match:\nExpected: " << expected
+				  << "\nResult  : " << result << "\n";
 		assert(false);
 	}
 	list.debug_print_list("********");
 }
 
-int main()
-{
+int main() {
 	insert_sorted_test();
 	deletion_test();
 

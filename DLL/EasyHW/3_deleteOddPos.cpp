@@ -1,22 +1,17 @@
-#include "../basicDLL/dll.hpp"
+#include "../include/dll.hpp"
 #include <initializer_list>
 
-class DLL : public BasicDLL
-{
+class DLLExt : public Dll {
   public:
-	DLL() = default;
+	DLLExt() = default;
 
-	DLL(const std::initializer_list<int> &lst) : BasicDLL(lst)
-	{
-	}
+	DLLExt(const std::initializer_list<int> &lst) : Dll(lst) {}
 
-	DLL(const DLL &another) = delete;
-	DLL &operator=(const DLL &another) = delete;
+	DLLExt(const DLLExt &another) = delete;
+	DLLExt &operator=(const DLLExt &another) = delete;
 
-	void delete_odd_pos()
-	{
-		for (Node *cur{head.get()}; cur;)
-		{
+	void delete_odd_pos() {
+		for (Node *cur{head.get()}; cur;) {
 			Node *to_be_deleted = cur;
 
 			if ((cur = cur->next.get()))
@@ -28,10 +23,9 @@ class DLL : public BasicDLL
 	}
 };
 
-void test1()
-{
+void test1() {
 	std::cout << "\n\nTest 1\n";
-	DLL ll{1};
+	DLLExt ll{1};
 
 	std::cout << ll << "\n";
 
@@ -42,18 +36,17 @@ void test1()
 
 	std::string expected = "";
 	std::string result = ll.debug_to_string();
-	if (expected != result)
-	{
-		std::cout << "no match:\nExpected: " << expected << "\nResult : " << result << "\n";
+	if (expected != result) {
+		std::cout << "no match:\nExpected: " << expected
+				  << "\nResult : " << result << "\n";
 		assert(false);
 	}
 	ll.debug_print_list("******************");
 }
 
-void test2()
-{
+void test2() {
 	std::cout << "\n\nTest 2\n";
-	DLL ll{2, 1, 4, 3, 6, 5, 8, 7, 9};
+	DLLExt ll{2, 1, 4, 3, 6, 5, 8, 7, 9};
 
 	std::cout << ll << "\n";
 
@@ -64,15 +57,14 @@ void test2()
 
 	std::string expected = "1 3 5 7";
 	std::string result = ll.debug_to_string();
-	if (expected != result)
-	{
-		std::cout << "no match:\nExpected: " << expected << "\nResult : " << result << "\n";
+	if (expected != result) {
+		std::cout << "no match:\nExpected: " << expected
+				  << "\nResult : " << result << "\n";
 		assert(false);
 	}
 	ll.debug_print_list("******************");
 }
-int main()
-{
+int main() {
 	test1();
 	test2();
 	std::cout << "\n\n NO RTE\n";

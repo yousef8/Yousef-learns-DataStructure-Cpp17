@@ -11,44 +11,37 @@
 #include <utility>
 #include <vector>
 
-struct Node
-{
+struct Node {
 	std::unique_ptr<Node> next;
 	int data;
 	Node *prev;
 
-	Node(int data) : data{data}, next{nullptr}, prev{nullptr}
-	{
-	}
+	Node(int data) : data{data}, next{nullptr}, prev{nullptr} {}
 
-	void set(std::unique_ptr<Node> _next, Node *_prev)
-	{
+	void set(std::unique_ptr<Node> _next, Node *_prev) {
 		next = std::move(_next);
 		prev = _prev;
 	}
 
-	~Node()
-	{
-		std::cout << "Destroy value: " << data << " at address " << this << "\n";
+	~Node() {
+		std::cout << "Destroy value: " << data << " at address " << this
+				  << "\n";
 	}
 };
 
-class BasicDLL
-{
+class Dll {
   protected:
 	std::unique_ptr<Node> head{};
 	Node *tail{};
 
-	void link(Node *head, Node *tail)
-	{
+	void link(Node *head, Node *tail) {
 		if (head)
 			head->next.reset(tail);
 		if (tail)
 			tail->prev = head;
 	}
 
-	Node *delete_and_link(Node *to_be_deleted)
-	{
+	Node *delete_and_link(Node *to_be_deleted) {
 		Node *prev = to_be_deleted->prev;
 		link(to_be_deleted->prev, to_be_deleted->next.release());
 		delete_node(to_be_deleted);
@@ -61,13 +54,9 @@ class BasicDLL
 	int length{0};
 	std::vector<Node *> debug_data;
 
-	void debug_add_node(Node *node)
-	{
-		debug_data.push_back(node);
-	}
+	void debug_add_node(Node *node) { debug_data.push_back(node); }
 
-	void debug_remove_node(Node *node)
-	{
+	void debug_remove_node(Node *node) {
 		auto it = std::find(debug_data.begin(), debug_data.end(), node);
 		if (it == debug_data.end())
 			std::cout << "Node does not exist\n";
@@ -76,45 +65,39 @@ class BasicDLL
 	}
 
   public:
-	BasicDLL() = default;
+	Dll() = default;
 
-	BasicDLL(const std::initializer_list<int> &lst)
-	{
+	Dll(const std::initializer_list<int> &lst) {
 		for (int value : lst)
 			insert_end(value);
 	}
 
-	BasicDLL(const BasicDLL &) = delete;
-	BasicDLL &operator=(const BasicDLL &other) = delete;
+	Dll(const Dll &) = delete;
+	Dll &operator=(const Dll &other) = delete;
 
 	// For Debugging purposes
-	void print()
-	{
+	void print() {
 		for (Node *cur{head.get()}; cur; cur = cur->next.get())
 			std::cout << cur->data << " ";
 		std::cout << "\n";
 	}
 
-	void print_reversed()
-	{
+	void print_reversed() {
 		for (Node *cur{tail}; cur; cur = cur->prev)
 			std::cout << cur->data << " <-> ";
 		std::cout << "\n";
 	}
 
-	void debug_print_address()
-	{
+	void debug_print_address() {
 		for (Node *cur{head.get()}; cur; cur = cur->next.get())
 			std::cout << cur << "," << cur->data << "\t";
 		std::cout << "\n";
 	}
 
-	void debug_print_node(Node *node, bool is_seperate = false)
-	{
+	void debug_print_node(Node *node, bool is_seperate = false) {
 		if (is_seperate)
 			std::cout << "Sep: ";
-		if (node == nullptr)
-		{
+		if (node == nullptr) {
 			std::cout << "nullptr\n";
 			return;
 		}
@@ -138,8 +121,7 @@ class BasicDLL
 		else
 			std::cout << "\n";
 	}
-	void debug_print_list(std::string msg = "")
-	{
+	void debug_print_list(std::string msg = "") {
 		if (msg != "")
 			std::cout << msg << "\n";
 		for (int i = 0; i < (int)debug_data.size(); ++i)
@@ -147,13 +129,11 @@ class BasicDLL
 		std::cout << "************\n" << std::flush;
 	}
 
-	std::string debug_to_string()
-	{
+	std::string debug_to_string() {
 		if (length == 0)
 			return "";
 		std::ostringstream oss;
-		for (Node *cur{head.get()}; cur; cur = cur->next.get())
-		{
+		for (Node *cur{head.get()}; cur; cur = cur->next.get()) {
 			oss << cur->data;
 			if (cur->next)
 				oss << " ";
@@ -161,15 +141,11 @@ class BasicDLL
 		return oss.str();
 	}
 
-	void debug_verify_data_integrity()
-	{
-		if (length == 0)
-		{
+	void debug_verify_data_integrity() {
+		if (length == 0) {
 			assert(head == nullptr);
 			assert(tail == nullptr);
-		}
-		else
-		{
+		} else {
 			assert(head != nullptr);
 			assert(tail != nullptr);
 			if (length == 1)
@@ -180,8 +156,7 @@ class BasicDLL
 			assert(!tail->next);
 		}
 		int len = 0;
-		for (Node *cur{head.get()}; cur; cur = cur->next.get(), len++)
-		{
+		for (Node *cur{head.get()}; cur; cur = cur->next.get(), len++) {
 			if (len == length - 1) // make sure we end at tail
 				assert(cur == tail);
 		}
@@ -190,28 +165,24 @@ class BasicDLL
 		assert(length == (int)debug_data.size());
 
 		len = 0;
-		for (Node *cur = tail; cur; cur = cur->prev, len++)
-		{
+		for (Node *cur = tail; cur; cur = cur->prev, len++) {
 			if (len == length - 1) // make sure we end at head
 				assert(cur == head.get());
 		}
 	}
 
-	void delete_node(Node *node)
-	{
+	void delete_node(Node *node) {
 		debug_remove_node(node);
 		--length;
 	}
 
-	void add_node(Node *node)
-	{
+	void add_node(Node *node) {
 		debug_add_node(node);
 		++length;
 	}
 	////////////////////////////////////////////////////////////
 
-	void insert_end(int value)
-	{
+	void insert_end(int value) {
 		Node *node = new Node{value};
 		add_node(node);
 		link(tail, node);
@@ -224,8 +195,7 @@ class BasicDLL
 		debug_verify_data_integrity();
 	}
 
-	void insert_front(int value)
-	{
+	void insert_front(int value) {
 		auto node = std::make_unique<Node>(value);
 		add_node(node.get());
 		link(node.get(), head.release());
@@ -236,8 +206,7 @@ class BasicDLL
 		debug_verify_data_integrity();
 	}
 
-	void embed_before(Node *cur, int value)
-	{
+	void embed_before(Node *cur, int value) {
 		if (cur == head.get())
 			return insert_front(value);
 
@@ -261,8 +230,7 @@ class BasicDLL
 		return;
 	}
 
-	void insert_sorted(int value)
-	{
+	void insert_sorted(int value) {
 		for (auto cur{head.get()}; cur; cur = cur->next.get())
 			if (value <= cur->data)
 				return embed_before(cur, value);
@@ -270,8 +238,7 @@ class BasicDLL
 		return insert_end(value);
 	}
 
-	friend std::ostream &operator<<(std::ostream &out, const BasicDLL &ls)
-	{
+	friend std::ostream &operator<<(std::ostream &out, const Dll &ls) {
 		out << " X <-> ";
 
 		for (Node *cur{ls.head.get()}; cur; cur = cur->next.get())
@@ -282,8 +249,7 @@ class BasicDLL
 		return out;
 	}
 
-	void delete_front()
-	{
+	void delete_front() {
 		// if the BasicDLL is empty
 		if (head.get() == tail && !head)
 			return;
@@ -298,8 +264,7 @@ class BasicDLL
 		debug_verify_data_integrity();
 	}
 
-	void delete_end()
-	{
+	void delete_end() {
 		if (head.get() == tail)
 			return delete_front();
 
@@ -312,8 +277,7 @@ class BasicDLL
 		debug_verify_data_integrity();
 	}
 
-	void delete_a_node(Node *to_be_deleted)
-	{
+	void delete_a_node(Node *to_be_deleted) {
 		if (to_be_deleted == head.get())
 			return delete_front();
 		else if (to_be_deleted == tail)
@@ -323,12 +287,9 @@ class BasicDLL
 		return;
 	}
 
-	void delete_node_with_key(int value)
-	{
-		for (Node *cur{head.get()}; cur; cur = cur->next.get())
-		{
-			if (cur->data == value)
-			{
+	void delete_node_with_key(int value) {
+		for (Node *cur{head.get()}; cur; cur = cur->next.get()) {
+			if (cur->data == value) {
 				if (cur == head.get())
 					return delete_front();
 				if (cur == tail)

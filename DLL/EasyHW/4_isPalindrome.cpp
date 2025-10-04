@@ -1,22 +1,19 @@
-#include "../basicDLL/dll.hpp"
+#include "../include/dll.hpp"
 #include <initializer_list>
 
-class DLL : public BasicDLL
-{
+class DllExtended : public Dll {
   public:
-	DLL() = default;
+	DllExtended() = default;
 
-	DLL(const std::initializer_list<int> &lst) : BasicDLL(lst)
-	{
-	}
+	DllExtended(const std::initializer_list<int> &lst) : Dll(lst) {}
 
-	DLL(const DLL &another) = delete;
-	DLL &operator=(const DLL &another) = delete;
+	DllExtended(const DllExtended &another) = delete;
+	DllExtended &operator=(const DllExtended &another) = delete;
 
-	bool is_palindrome()
-	{
+	bool is_palindrome() {
 
-		for (Node *lcur{head.get()}, *rcur{tail}; lcur->next.get() != rcur->prev;
+		for (Node *lcur{head.get()}, *rcur{tail};
+			 lcur->next.get() != rcur->prev;
 			 lcur = lcur->next.get(), rcur = rcur->prev)
 			if (lcur->data != rcur->data)
 				return false;
@@ -24,11 +21,10 @@ class DLL : public BasicDLL
 	}
 };
 
-void test1()
-{
+void test1() {
 	std::cout << "\n\ntest 1\n";
 
-	DLL ll{1, 2, 2, 1};
+	DllExtended ll{1, 2, 2, 1};
 	std::cout << ll << "\n";
 
 	std::cout << "Is Palindrome : ";
@@ -37,53 +33,50 @@ void test1()
 	std::cout << result << "\n";
 
 	bool expected = true;
-	if (expected != result)
-	{
-		std::cout << "no match:\nExpected: " << expected << "\nResult : " << result << "\n";
+	if (expected != result) {
+		std::cout << "no match:\nExpected: " << expected
+				  << "\nResult : " << result << "\n";
 		assert(false);
 	}
 	ll.debug_print_list("******************");
 }
 
-void test2()
-{
+void test2() {
 	std::cout << "\n\ntest 2\n";
 
-	DLL ll{1, 2, 3, 2, 1};
+	DllExtended ll{1, 2, 3, 2, 1};
 	std::cout << ll << "\n";
 
 	bool result = ll.is_palindrome();
 	std::cout << "Is Palindrome : " << result << "\n";
 
 	bool expected = true;
-	if (expected != result)
-	{
-		std::cout << "no match:\nExpected: " << expected << "\nResult : " << result << "\n";
+	if (expected != result) {
+		std::cout << "no match:\nExpected: " << expected
+				  << "\nResult : " << result << "\n";
 		assert(false);
 	}
 	ll.debug_print_list("******************");
 }
-void test3()
-{
+void test3() {
 	std::cout << "\n\ntest 3\n";
 
-	DLL ll{1, 2, 3, 4, 2, 1};
+	DllExtended ll{1, 2, 3, 4, 2, 1};
 	std::cout << ll << "\n";
 
 	bool result = ll.is_palindrome();
 	std::cout << "Is Palindrome : " << result << "\n";
 
 	bool expected = false;
-	if (expected != result)
-	{
-		std::cout << "no match:\nExpected: " << expected << "\nResult : " << result << "\n";
+	if (expected != result) {
+		std::cout << "no match:\nExpected: " << expected
+				  << "\nResult : " << result << "\n";
 		assert(false);
 	}
 	ll.debug_print_list("******************");
 }
 
-int main()
-{
+int main() {
 	test1();
 	test2();
 	test3();
