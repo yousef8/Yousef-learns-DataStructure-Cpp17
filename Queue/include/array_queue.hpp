@@ -5,20 +5,10 @@
 #include <iostream>
 
 class Queue {
-	int size{};
-	int front{0};
-	int rear{0};
-	int added_elements{};
-	int *array{};
-
   public:
 	Queue(int size) : size(size) { array = new int[size]; }
 
 	~Queue() { delete[] array; }
-
-	int next(int pos) {
-		return (pos + 1) % size; //  Or shorter way
-	}
 
 	void enqueue(int value) {
 		assert(!isFull());
@@ -35,12 +25,12 @@ class Queue {
 		return value;
 	}
 
-	int front_val() {
+	int front_val() const {
 		assert(!isEmpty());
 		return array[front];
 	}
 
-	void display() {
+	void display() const {
 		std::cout << "Front " << front << " - rear " << rear << "\t";
 		if (isFull())
 			std::cout << "full";
@@ -56,10 +46,19 @@ class Queue {
 		std::cout << "\n\n";
 	}
 
-	int isEmpty() { return added_elements == 0; }
+	int isEmpty() const { return added_elements == 0; }
 
-	bool isFull() { return added_elements == size; }
+	bool isFull() const { return added_elements == size; }
 
-	int length() { return added_elements; }
+	int length() const { return added_elements; }
+
+  private:
+	int size{};
+	int front{0};
+	int rear{0};
+	int added_elements{};
+	int *array{};
+
+	int next(int pos) const { return (pos + 1) % size; }
 };
 #endif
