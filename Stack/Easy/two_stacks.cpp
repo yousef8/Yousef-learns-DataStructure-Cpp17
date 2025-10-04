@@ -1,10 +1,8 @@
 #include <cassert>
-#include <cmath>
 #include <iostream>
 #include <stdexcept>
 
-class TwoStack
-{
+class TwoStack {
   private:
 	int size{};
 	int offset{2};
@@ -13,21 +11,13 @@ class TwoStack
 	int *array{};
 
   public:
-	TwoStack(int size) : size{size}
-	{
-		array = new int[size * 2];
-	}
+	TwoStack(int size) : size{size} { array = new int[size * 2]; }
 
-	~TwoStack()
-	{
-		delete[] array;
-	}
+	~TwoStack() { delete[] array; }
 
-	void push(int idx, int x)
-	{
+	void push(int idx, int x) {
 		assert(idx > 0 && idx < 3);
-		if (isFull())
-		{
+		if (isFull()) {
 			throw std::overflow_error("Stack overflow!");
 		}
 		top[idx - 1] += offset;
@@ -35,11 +25,9 @@ class TwoStack
 		++added_elements;
 	}
 
-	int pop(int idx)
-	{
+	int pop(int idx) {
 		assert(idx > 0 && idx < 3);
-		if (isEmpty())
-		{
+		if (isEmpty()) {
 			throw std::underflow_error("Stack underflow!");
 		}
 		int old_top = array[top[idx - 1]];
@@ -48,27 +36,18 @@ class TwoStack
 		return old_top;
 	}
 
-	int peek(int idx)
-	{
-		if (isEmpty())
-		{
+	int peek(int idx) {
+		if (isEmpty()) {
 			throw std::underflow_error("Stack Underflow!");
 		}
 		return array[top[idx - 1]];
 	}
 
-	int isFull()
-	{
-		return added_elements == size;
-	}
+	int isFull() { return added_elements == size; }
 
-	int isEmpty()
-	{
-		return added_elements == 0;
-	}
+	int isEmpty() { return added_elements == 0; }
 
-	void display(int idx)
-	{
+	void display(int idx) {
 		for (int i = top[idx - 1]; i >= 0; i -= offset)
 			std::cout << array[i] << " ";
 		std::cout << "\n";
@@ -76,8 +55,7 @@ class TwoStack
 };
 
 // Test functions for each case
-void testCase1()
-{
+void testCase1() {
 	TwoStack ts(100);
 	ts.push(1, 10);
 	ts.push(1, 20);
@@ -87,8 +65,7 @@ void testCase1()
 	std::cout << "Test case 1 passed.\n";
 }
 
-void testCase2()
-{
+void testCase2() {
 	TwoStack ts(100);
 	ts.push(2, 100);
 	ts.push(2, 200);
@@ -98,8 +75,7 @@ void testCase2()
 	std::cout << "Test case 2 passed.\n";
 }
 
-void testCase3()
-{
+void testCase3() {
 	TwoStack ts(100);
 	ts.push(1, 10);
 	ts.push(2, 100);
@@ -110,8 +86,7 @@ void testCase3()
 	std::cout << "Test case 3 passed.\n";
 }
 
-void testCase4()
-{
+void testCase4() {
 	TwoStack ts(100);
 	for (int i = 0; i < 50; ++i)
 		ts.push(1, i);
@@ -121,74 +96,55 @@ void testCase4()
 	std::cout << "Test case 4 passed.\n";
 }
 
-void testCase5()
-{
+void testCase5() {
 	TwoStack ts(100);
 	for (int i = 0; i < 50; ++i)
 		ts.push(1, i);
 	for (int i = 0; i < 50; ++i)
 		ts.push(2, i);
-	try
-	{
+	try {
 		ts.push(1, 100); // Should fail
 		assert(false);	 // Shouldn't reach here
-	}
-	catch (const std::overflow_error &)
-	{
+	} catch (const std::overflow_error &) {
 		std::cout << "Test case 5 passed.\n";
 	}
 }
 
-void testCase6()
-{
+void testCase6() {
 	TwoStack ts(100);
-	try
-	{
+	try {
 		ts.pop(1);	   // Should fail
 		assert(false); // Shouldn't reach here
-	}
-	catch (const std::underflow_error &)
-	{
+	} catch (const std::underflow_error &) {
 		std::cout << "Test case 6 passed (Stack 1 empty pop).\n";
 	}
 
-	try
-	{
+	try {
 		ts.pop(2);	   // Should fail
 		assert(false); // Shouldn't reach here
-	}
-	catch (const std::underflow_error &)
-	{
+	} catch (const std::underflow_error &) {
 		std::cout << "Test case 6 passed (Stack 2 empty pop).\n";
 	}
 }
 
-void testCase7()
-{
+void testCase7() {
 	TwoStack ts(100);
-	try
-	{
+	try {
 		ts.peek(1);	   // Should fail
 		assert(false); // Shouldn't reach here
-	}
-	catch (const std::underflow_error &)
-	{
+	} catch (const std::underflow_error &) {
 		std::cout << "Test case 7 passed (Stack 1 empty peek).\n";
 	}
 
-	try
-	{
+	try {
 		ts.peek(2);	   // Should fail
 		assert(false); // Shouldn't reach here
-	}
-	catch (const std::underflow_error &)
-	{
+	} catch (const std::underflow_error &) {
 		std::cout << "Test case 7 passed (Stack 2 empty peek).\n";
 	}
 }
 
-void testCase8()
-{
+void testCase8() {
 	TwoStack ts(100);
 	for (int i = 0; i < 50; ++i)
 		ts.push(1, i);
@@ -198,8 +154,7 @@ void testCase8()
 	std::cout << "Test case 8 passed.\n";
 }
 
-int main()
-{
+int main() {
 	testCase1();
 	testCase2();
 	testCase3();

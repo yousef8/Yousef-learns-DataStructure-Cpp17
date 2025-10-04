@@ -1,4 +1,4 @@
-#include "stack_array.hpp"
+#include "../include/stack_array.hpp"
 #include <cassert>
 #include <iostream>
 

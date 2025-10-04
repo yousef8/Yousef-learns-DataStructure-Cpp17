@@ -1,38 +1,30 @@
-#include "stack_array.hpp"
+#include "../include/stack_array.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
 
-std::string removeDuplicates(const std::string &s)
-{
+std::string removeDuplicates(const std::string &s) {
 	int string_length = static_cast<int>(s.length());
 	Stack uniques{string_length};
 	std::string unique_string = "";
 
-	for (int i{string_length - 1}; i >= 0; --i)
-	{
-		if (uniques.isEmpty() || uniques.peek() != s[i])
-		{
+	for (int i{string_length - 1}; i >= 0; --i) {
+		if (uniques.isEmpty() || uniques.peek() != s[i]) {
 			uniques.push(s[i]);
-		}
-		else
-		{
+		} else {
 			uniques.pop();
 		}
 	}
 
-	while (!uniques.isEmpty())
-	{
+	while (!uniques.isEmpty()) {
 		unique_string += uniques.pop();
 	}
 
 	return unique_string;
 }
 
-void runTests()
-{
-	struct TestCase
-	{
+void runTests() {
+	struct TestCase {
 		std::string input;
 		std::string expected;
 	};
@@ -52,16 +44,16 @@ void runTests()
 		{"bbaaccbb", ""}	  // Entire string collapses to empty
 	};
 
-	for (const auto &testCase : testCases)
-	{
+	for (const auto &testCase : testCases) {
 		std::string result = removeDuplicates(testCase.input);
-		std::cout << "Input: \"" << testCase.input << "\" | Expected: \"" << testCase.expected << "\" | Result: \""
-				  << result << "\" | " << (result == testCase.expected ? "PASS" : "FAIL") << std::endl;
+		std::cout << "Input: \"" << testCase.input << "\" | Expected: \""
+				  << testCase.expected << "\" | Result: \"" << result << "\" | "
+				  << (result == testCase.expected ? "PASS" : "FAIL")
+				  << std::endl;
 	}
 }
 
-int main()
-{
+int main() {
 	runTests();
 	return 0;
 }

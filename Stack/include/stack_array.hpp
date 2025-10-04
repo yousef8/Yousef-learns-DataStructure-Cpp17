@@ -49,15 +49,15 @@ class Stack {
 		push(last_top);
 	}
 
-  void reverse() {
-    if(isEmpty()){
-      return;
-    }
+	void reverse() {
+		if (isEmpty()) {
+			return;
+		}
 
-    int last_top = pop();
-    reverse();
-    push_back(last_top);
-  }
+		int last_top = pop();
+		reverse();
+		push_back(last_top);
+	}
 
 	int isFull() { return top == size - 1; }
 
@@ -71,4 +71,3 @@ class Stack {
 		cout << "\n";
 	}
 };
-

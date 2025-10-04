@@ -1,20 +1,17 @@
-#include "stack_array.hpp"
+#include "../include/stack_array.hpp"
 #include <cassert>
 #include <string>
 
-int reverse_number(int num)
-{
+int reverse_number(int num) {
 	Stack stack{20};
 	int reversed_num = 0;
-	while (num)
-	{
+	while (num) {
 		stack.push(num % 10);
 		num /= 10;
 	}
 
 	int tens = 1;
-	while (!stack.isEmpty())
-	{
+	while (!stack.isEmpty()) {
 		reversed_num = (stack.pop() * tens) + reversed_num;
 		tens *= 10;
 	}
@@ -22,8 +19,7 @@ int reverse_number(int num)
 	return reversed_num;
 }
 
-int main()
-{
+int main() {
 	assert(reverse_number(1234) == 4321);
 	std::cout << reverse_number(1234) << std::endl;
 	std::cout << reverse_number(0) << std::endl;
