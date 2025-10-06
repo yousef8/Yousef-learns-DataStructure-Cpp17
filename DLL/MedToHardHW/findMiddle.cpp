@@ -19,7 +19,7 @@ class DllExtended : public Dll {
 		return front->data;
 	}
 
-	int getMiddleValWithRabbitAndHair() {
+	int getMiddleValWithTortoiseAndHair() {
 		auto rabbit = head.get();
 		auto hair = head.get();
 
@@ -34,7 +34,7 @@ class DllExtended : public Dll {
 
 int main() {
 	std::cout << "######################################\n";
-	std::cout << "####Using DllExtended prev & next Pointers####\n";
+	std::cout << "#### Using DllExtended prev & next Pointers ####\n";
 	std::cout << "######################################\n";
 
 	DllExtended evenDll{1, 2, 3, 4, 5, 6};
@@ -47,19 +47,19 @@ int main() {
 	std::cout << "Middle value is : " << oddDll.getMiddleVal() << "\n";
 
 	std::cout << "\n######################################\n";
-	std::cout << "####Using Rabbit & Hair Algo####\n";
+	std::cout << "##### Using Tortoise & Hair Algo #####\n";
 	std::cout << "######################################\n";
 	std::cout << evenDll << "\n";
-	std::cout << "Middle value is : " << evenDll.getMiddleValWithRabbitAndHair()
-			  << "\n";
+	std::cout << "Middle value is : "
+			  << evenDll.getMiddleValWithTortoiseAndHair() << "\n";
 
 	std::cout << oddDll << "\n";
-	std::cout << "Middle value is : " << oddDll.getMiddleValWithRabbitAndHair()
-			  << "\n";
+	std::cout << "Middle value is : "
+			  << oddDll.getMiddleValWithTortoiseAndHair() << "\n";
 
 	DllExtended singleElemDll{1};
 	std::cout << singleElemDll << "\n";
 	std::cout << "Middle value is : "
-			  << singleElemDll.getMiddleValWithRabbitAndHair() << "\n";
+			  << singleElemDll.getMiddleValWithTortoiseAndHair() << "\n";
 	return 0;
 }
