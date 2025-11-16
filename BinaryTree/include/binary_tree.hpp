@@ -46,6 +46,20 @@ template <typename Derived> class BinaryTree {
 		}
 	}
 
+	void clear() {
+		if (left) {
+			delete left;
+			left = nullptr;
+		}
+
+		if (right) {
+			delete right;
+			right = nullptr;
+		}
+	}
+
+	virtual ~BinaryTree() { clear(); }
+
   protected:
 	int data{};
 	Derived *left{nullptr};
