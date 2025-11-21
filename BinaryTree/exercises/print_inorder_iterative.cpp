@@ -42,8 +42,7 @@ class InorderIterativeBT : public BinaryTree<InorderIterativeBT> {
 	}
 };
 
-void test_print_inorder_iterative() {
-
+int main() {
 	TestSuite<std::string> suite;
 
 	suite.addTest(
@@ -316,9 +315,5 @@ void test_print_inorder_iterative() {
 		"4 5 6 7 8 9 10 11");
 
 	suite.run();
-}
-
-int main() {
-	test_print_inorder_iterative();
 	return 0;
 }
