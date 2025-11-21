@@ -2,9 +2,9 @@
 #include <iostream>
 #include <vector>
 
-template <typename Derived> class BinaryTree {
+template <typename Derived, typename T = int> class BinaryTree {
   public:
-	BinaryTree(int value) : data(value) {}
+	BinaryTree(T value) : data(value) {}
 
 	void printInOrder() const {
 		if (left) {
@@ -16,7 +16,7 @@ template <typename Derived> class BinaryTree {
 		}
 	}
 
-	void add(const std::vector<int> &values,
+	void add(const std::vector<T> &values,
 			 const std::vector<char> &directions) {
 
 		if (values.size() != directions.size()) {
@@ -61,7 +61,7 @@ template <typename Derived> class BinaryTree {
 	virtual ~BinaryTree() { clear(); }
 
   protected:
-	int data{};
+	T data{};
 	Derived *left{nullptr};
 	Derived *right{nullptr};
 };
