@@ -1,5 +1,7 @@
 #include <cassert>
 #include <iostream>
+#include <queue>
+#include <string>
 #include <vector>
 
 template <typename Derived, typename T = int> class BinaryTree {
@@ -44,6 +46,68 @@ template <typename Derived, typename T = int> class BinaryTree {
 				current = current->right;
 			}
 		}
+	}
+
+	std::string preOrder() const {
+		std::string result{};
+		result.append(std::to_string(data) + " ");
+		if (left) {
+			result += left->preOrder();
+		}
+		if (right) {
+			result += right->preOrder();
+		}
+		return result;
+	}
+
+	std::string inOrder() const {
+		std::string result;
+		if (left) {
+			result += left->inOrder();
+		}
+		result += std::to_string(data) + " ";
+		if (right) {
+			result += right->inOrder();
+		}
+		return result;
+	}
+
+	std::string postOrder() const {
+		std::string result;
+		if (left) {
+			result += left->postOrder();
+		}
+		if (right) {
+			result += right->postOrder();
+		}
+		result.append(std::to_string(data) + " ");
+		return result;
+	}
+
+	std::string breadthFirst() const {
+		std::string result;
+		std::queue<const Derived *> q;
+		q.push(static_cast<const Derived *>(this));
+
+		while (!q.empty()) {
+			const Derived *current = q.front();
+			q.pop();
+
+			result += std::to_string(current->data) + " ";
+
+			if (current->left) {
+				q.push(current->left);
+			}
+			if (current->right) {
+				q.push(current->right);
+			}
+		}
+
+		if (!result.empty()) {
+			result.pop_back();
+		}
+
+		return result;
 	}
 
 	void clear() {
