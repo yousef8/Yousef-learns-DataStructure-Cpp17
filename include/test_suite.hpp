@@ -4,7 +4,16 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include <type_traits>
 #include <vector>
+
+// Type trait to detect if T can be printed with operator<<
+template <typename T, typename = void> struct is_printable : std::false_type {};
+
+template <typename T>
+struct is_printable<T, std::void_t<decltype(std::declval<std::ostream &>()
+											<< std::declval<T>())>>
+	: std::true_type {};
 
 template <typename T> class TestSuite {
   public:
@@ -19,6 +28,10 @@ template <typename T> class TestSuite {
 		tests.push_back({name, test_func, expected});
 	}
 
+	void setFormatter(std::function<std::string(const T &)> formatter) {
+		custom_formatter = formatter;
+	}
+
 	void run() {
 		int passed = 0;
 		int failed = 0;
@@ -31,8 +44,16 @@ template <typename T> class TestSuite {
 			} else {
 				failed++;
 				std::cout << "✗ " << test.name << "\n";
-				std::cout << "  Expected: " << test.expected << "\n";
-				std::cout << "  Actual:   " << result << "\n";
+				if (custom_formatter) {
+					std::cout
+						<< "  Expected: " << custom_formatter(test.expected)
+						<< "\n";
+					std::cout << "  Actual:   " << custom_formatter(result)
+							  << "\n";
+				} else {
+					printValue("  Expected: ", test.expected);
+					printValue("  Actual:   ", result);
+				}
 			}
 		}
 
@@ -47,6 +68,17 @@ template <typename T> class TestSuite {
 
   private:
 	std::vector<TestCase> tests;
+	std::function<std::string(const T &)> custom_formatter;
+
+	// Print value if it's printable, otherwise print a generic message
+	template <typename U>
+	void printValue(const std::string &label, const U &value) {
+		if constexpr (is_printable<U>::value) {
+			std::cout << label << value << "\n";
+		} else {
+			std::cout << label << "<non-printable type>\n";
+		}
+	}
 };
 
 #endif // TEST_SUITE_HPP_17112025
