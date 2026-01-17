@@ -45,6 +45,8 @@ template <typename Derived> class BST {
 		return right && right->search(target);
 	}
 
+	int getData() const { return data; }
+
 	void clear() {
 		if (left) {
 			delete left;
