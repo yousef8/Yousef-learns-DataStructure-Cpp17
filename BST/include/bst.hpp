@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <initializer_list>
@@ -61,6 +62,18 @@ template <typename Derived> class BST {
 			current = current->left;
 		}
 		return current;
+	}
+
+	int height() const {
+		int h{0};
+
+		if (left)
+			h = 1 + left->height();
+
+		if (right)
+			h = std::max(h, 1 + right->height());
+
+		return h;
 	}
 
 	int getData() const { return data; }
