@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cmath>
+#include <initializer_list>
 #include <string>
 
 template <typename Derived> class BST {
@@ -10,6 +11,15 @@ template <typename Derived> class BST {
 
   public:
 	BST(int data) : data(data) {}
+
+	BST(std::initializer_list<int> values) {
+		auto it = values.begin();
+		if (it != values.end()) {
+			data = *it++;
+			for (; it != values.end(); ++it)
+				insert(*it);
+		}
+	}
 
 	std::string print_inorder() {
 		std::string result;
@@ -43,6 +53,14 @@ template <typename Derived> class BST {
 			return left && left->search(target);
 
 		return right && right->search(target);
+	}
+
+	const Derived *min() const {
+		auto current = static_cast<const Derived *>(this);
+		while (current->left) {
+			current = current->left;
+		}
+		return current;
 	}
 
 	int getData() const { return data; }
