@@ -14,9 +14,7 @@ std::vector<int> nextGreaterElement(std::vector<int> elements) {
 
 		res[i] = stk.isEmpty() ? -1 : stk.peek();
 
-		if (elements[i] > elements[i - 1]) {
-			stk.push(elements[i]);
-		}
+		stk.push(elements[i]);
 	}
 
 	return res;
