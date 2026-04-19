@@ -88,7 +88,7 @@ class MinHeap {
 
 	~MinHeap() { delete[] arr; }
 
-  private:
+  protected:
 	int *arr{};
 	int capacity{};
 	int size{};

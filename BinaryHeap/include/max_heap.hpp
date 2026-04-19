@@ -88,7 +88,7 @@ class MaxHeap {
 
 	~MaxHeap() { delete[] arr; }
 
-  private:
+  protected:
 	int *arr{};
 	int capacity{};
 	int size{};
