@@ -105,7 +105,7 @@ class MaxHeap {
 
 	int parent(int idx) const { return idx == 0 ? -1 : (idx - 1) / 2; }
 
-	void heapify_up(int idx) {
+	void heapify_up(int idx) { // O(logn)
 		int p = parent(idx);
 		if (p != -1 && arr[p] < arr[idx]) {
 			std::swap(arr[p], arr[idx]);
@@ -113,7 +113,7 @@ class MaxHeap {
 		}
 	}
 
-	void heapify_down(int idx) {
+	void heapify_down(int idx) { // O(logn)
 		int l = left(idx);
 		int r = right(idx);
 
@@ -131,7 +131,7 @@ class MaxHeap {
 		}
 	}
 
-	void heapify() {
+	void heapify() { // O(n)
 		for (int i = size / 2 - 1; i >= 0; --i) {
 			heapify_down(i);
 		}
